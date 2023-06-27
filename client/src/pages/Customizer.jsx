@@ -43,12 +43,36 @@ const Customizer = () => {
       case "filepicker":
         return <FilePicker file={file} setFile={setFile} readFile={readFile} />;
       case "aipicker":
-        return <AIPicker />;
+        return (
+          <AIPicker
+            prompt={prompt}
+            setPrompt={setPrompt}
+            generatingImg={generatingImg}
+            handleSubmit={handleSubmit}
+          />
+        );
       default:
         return null;
     }
   };
 
+  // for ai prompt 
+  const handleSubmit = async (type) => {
+    if (!prompt) {
+      return alert("Please enter a prompt");
+    }
+
+    try {
+      // call backend to generate ai image from prompt
+    } catch (error) {
+      alert(error);
+    } finally {
+      setGeneratingImg(false);
+      setActiveEditorTab("");
+    }
+  };
+
+  // 
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type];
 
@@ -59,6 +83,7 @@ const Customizer = () => {
     }
   };
 
+  // changes the tabs on bottom (filter) to see logo or full, can be both
   const handleActiveFilterTab = (tabName) => {
     switch (tabName) {
       case "logoShirt":
@@ -75,11 +100,12 @@ const Customizer = () => {
     setActiveFilterTab((prevState) => {
       return {
         ...prevState,
-        [tabName]: !prevState[tabName]
-      }
-    })
+        [tabName]: !prevState[tabName],
+      };
+    });
   };
 
+  // to read file uploaded
   const readFile = (type) => {
     reader(file).then((result) => {
       handleDecals(type, result);
@@ -137,7 +163,9 @@ const Customizer = () => {
                 tab={tab}
                 isFilterTab
                 isActiveTab={activeFilterTab[tab.name]}
-                handleClick={() => {handleActiveFilterTab(tab.name)}}
+                handleClick={() => {
+                  handleActiveFilterTab(tab.name);
+                }}
               />
             ))}
           </motion.div>
