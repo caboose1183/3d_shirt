@@ -56,7 +56,7 @@ const Customizer = () => {
     }
   };
 
-  // for ai prompt 
+  // for ai prompt
   const handleSubmit = async (type) => {
     if (!prompt) {
       return alert("Please enter a prompt");
@@ -64,6 +64,21 @@ const Customizer = () => {
 
     try {
       // call backend to generate ai image from prompt
+      setGeneratingImg(true);
+
+      const response = await fetch("http://localhost:8080/api/v1/dalle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+        }),
+      });
+
+      const data = await response.json();
+
+      handleDecals(type, `data:image/png;base64,${data.photo}`);
     } catch (error) {
       alert(error);
     } finally {
@@ -72,7 +87,7 @@ const Customizer = () => {
     }
   };
 
-  // 
+  //
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type];
 
